@@ -61,8 +61,8 @@ Downloads use GitHub releases, Google’s Android repository and Eclipse Adoptiu
 Published checksums are verified before installation. Network failures are logged
 and retain existing tools; installation of missing tools needs internet access.
 Java downloads use the latest LTS release.
-APKForge does not update the Windows application. It does not currently bundle native distribution packages
-or an in-app text editor. XML adaptive icons without a bitmap fallback cannot be
+APKForge does not update the Windows application. Native releases provide a Debian package, AppImage and portable archive.
+There is no in-app text editor. XML adaptive icons without a bitmap fallback cannot be
 exported as a bitmap.
 
 Settings: `~/.config/apkforge/settings.json`; default frameworks:

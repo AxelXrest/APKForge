@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.AxelXrest.APKForge</id>
+  <metadata_license>MIT</metadata_license>
+  <project_license>MIT AND Unlicense</project_license>
+  <name>APKForge</name>
+  <summary>Decode, rebuild, align and sign Android APKs</summary>
+  <description>
+    <p>A native Python and Qt desktop interface for local Android tools, maintained by AxelXrest.</p>
+    <p>Inspect APK metadata, manage frameworks, work with smali and install APKs on authorized devices.</p>
+  </description>
+  <launchable type="desktop-id">apkforge.desktop</launchable>
+  <provides><binary>apkforge</binary></provides>
+  <content_rating type="oars-1.1"/>
+</component>

@@ -17,6 +17,8 @@ and would change the existing source-checkout launcher.
 | `tests/integration/smoke.py` | Optional real-tool integration smoke test. |
 | `.github/` | CI and issue/pull request templates. |
 | `pyproject.toml`, `MANIFEST.in` | Dependency, package and source-distribution metadata. |
+| `packaging/` | Native executable entry point, PyInstaller spec, package builders, desktop assets and notices. |
+| `apkforge/runtime.py` | Source/frozen helper commands and clean environments for system tools. |
 | `run.sh` | Source-checkout launcher and first-use dependency setup. |
 
 ## Execution and resource use
@@ -42,15 +44,19 @@ memory and passed through child-process environment variables.
    on a Linux desktop. CI checks packaged imports headlessly.
 5. Commit changes and push an annotated `v<version>` tag matching the package
    version. `.github/workflows/release.yml` waits for CI, verifies that version,
-   and creates a draft release with the wheel, sdist and SHA-256 checksums.
+   and waits for `.github/workflows/native.yml` before creating a draft with
+   native packages, wheel, sdist, upstream source archives and SHA-256 checksums.
 6. Review the draft, add user-visible changes and known limitations, and publish
    it in GitHub. Tag creation alone does not publish a public release. Do not
    move a release tag; fix issues in a new version.
 
 Release automation uses the repository's built-in GitHub token with write access
 only in the release job. GitHub Actions must be enabled. It does not publish to
-PyPI or package Java, Android tools, Python, or Qt system libraries. See the
+PyPI. Native packages bundle Python and Qt; Java and Android tools remain separate. See the
 README for preparing an offline installation.
 
 CI covers Python 3.10 and 3.14 on Ubuntu; it does not establish compatibility with
 every Linux distribution or replace visual desktop and physical-device testing.
+
+See [native packaging](native-packaging.md) for the Ubuntu 22.04 / Python 3.12
+build baseline and the bundled runtime checks.

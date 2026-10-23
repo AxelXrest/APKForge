@@ -3,6 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from pathlib import Path
 import re
+import os
 import shlex
 import subprocess
 import sys
@@ -11,7 +12,7 @@ import zipfile
 import xml.etree.ElementTree as ET
 
 from PySide6.QtCore import Qt, QTimer, QUrl
-from PySide6.QtGui import QAction, QDesktopServices, QFont, QPixmap, QTextCursor
+from PySide6.QtGui import QAction, QDesktopServices, QFont, QPixmap, QTextCursor, QIcon
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QFormLayout,
     QTabWidget, QLineEdit, QPushButton, QPlainTextEdit, QLabel, QCheckBox,
@@ -21,6 +22,7 @@ from PySide6.QtWidgets import (
 )
 from . import core, __version__
 from .jobs import Job, Runner
+from .runtime import module_command, open_url
 from .apkinfo import ApkInfoPanel
 
 STYLE = '''
@@ -96,7 +98,7 @@ class PathInput(QWidget):
         menu.addSeparator()
         action = menu.addAction('Open containing folder')
         action.setEnabled(bool(self.value()))
-        action.triggered.connect(lambda: QDesktopServices.openUrl(QUrl.fromLocalFile(str(Path(self.value()).expanduser().absolute().parent))))
+        action.triggered.connect(lambda: open_url(QUrl.fromLocalFile(str(Path(self.value()).expanduser().absolute().parent))))
         menu.exec(self.edit.mapToGlobal(pos))
 
     def dragEnterEvent(self, event):
@@ -667,7 +669,7 @@ class Window(QMainWindow):
             ('Apktool issue tracker', 'https://github.com/iBotPeaches/Apktool/issues'),
             ('Baksmali issue tracker', 'https://github.com/google/smali/issues'),
         ):
-            self.menu_action(help_menu, title, lambda url=url: QDesktopServices.openUrl(QUrl(url)))
+            self.menu_action(help_menu, title, lambda url=url: open_url(QUrl(url)))
         help_menu.addSeparator()
         self.menu_action(help_menu, 'About', self.about)
 
@@ -718,7 +720,7 @@ class Window(QMainWindow):
         return str(path)
 
     def task(self, title, action, *args):
-        return Job(title, [sys.executable, '-m', 'apkforge.tasks', action, *map(str, args)])
+        return Job(title, module_command('apkforge.tasks', action, *args))
 
     def decode_jobs(self):
         source = core.require_file(self.value('source'), core.PACKAGES)
@@ -974,7 +976,7 @@ class Window(QMainWindow):
             self.settings = core.Settings.load()
             QTimer.singleShot(0, self.probe_tools)
         self.runner.completed.connect(updated)
-        command = [sys.executable, '-m', 'apkforge.tools'] + (['--update'] if upgrade else [])
+        command = module_command('apkforge.tools') + (['--update'] if upgrade else [])
         self.run_jobs([Job('Update tools to latest stable' if upgrade else 'Install missing tools', command)], remember=False)
 
     def probe_tools(self):
@@ -1126,7 +1128,7 @@ class Window(QMainWindow):
             'https://apkpure.com/search?q={}', 'https://apkcombo.com/search/{}',
             'https://apk.support/app/{}', 'https://apkgk.com/{}',
         )
-        QDesktopServices.openUrl(QUrl(templates[index].format(package)))
+        open_url(QUrl(templates[index].format(package)))
 
     def open_location(self, path, *, parent=False):
         target = core.nonempty(path)
@@ -1134,7 +1136,7 @@ class Window(QMainWindow):
             target = target.parent
         if not target.exists():
             raise FileNotFoundError(f'Location does not exist: {target}')
-        if not QDesktopServices.openUrl(QUrl.fromLocalFile(str(target))):
+        if not open_url(QUrl.fromLocalFile(str(target))):
             raise OSError('Could not open location with the desktop application.')
 
     def open_project_file(self, name):
@@ -1189,14 +1191,17 @@ class Window(QMainWindow):
         self.append('Application temporary files cleared.')
 
     def new_instance(self):
-        subprocess.Popen([sys.executable, '-m', 'apkforge.app'], start_new_session=True)
+        subprocess.Popen(module_command('apkforge.app', persistent=True), start_new_session=True)
 
     def install_desktop_entry(self):
         from PySide6.QtCore import QStandardPaths
         directory = Path(QStandardPaths.writableLocation(QStandardPaths.StandardLocation.GenericDataLocation)) / 'applications'
         directory.mkdir(parents=True, exist_ok=True)
         entry = directory / 'apkforge.desktop'
-        entry.write_text(core.desktop_entry(sys.executable, Path(__file__).resolve().parent.parent), encoding='utf-8')
+        entry.write_text(core.desktop_entry(
+            os.environ.get('APPIMAGE', sys.executable) if getattr(sys, 'frozen', False) else sys.executable,
+            Path.home() if getattr(sys, 'frozen', False) else Path(__file__).resolve().parent.parent,
+            frozen=getattr(sys, 'frozen', False)), encoding='utf-8')
         self.append('Installed desktop launcher and Open With entry: ' + str(entry))
 
     def settings_dialog(self):
@@ -1297,6 +1302,7 @@ class Window(QMainWindow):
 def main():
     app = QApplication(sys.argv)
     app.setApplicationName('APKForge')
+    app.setWindowIcon(QIcon(str(Path(__file__).parent / 'assets/apkforge.svg')))
     app.setStyle('Fusion')
     window = Window()
     if len(sys.argv) > 1:

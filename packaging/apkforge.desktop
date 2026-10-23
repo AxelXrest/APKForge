@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=APKForge
+Comment=Decode, rebuild, align and sign Android APKs
+Exec=apkforge %f
+Icon=apkforge
+Terminal=false
+Categories=Development;
+MimeType=application/vnd.android.package-archive;application/zip;
+StartupNotify=true

@@ -4,6 +4,8 @@ from dataclasses import dataclass, field
 import codecs
 import os
 import signal
+import sys
+from .runtime import external_environment
 from PySide6.QtCore import QObject, QProcess, QProcessEnvironment, QTimer, Signal
 
 
@@ -59,7 +61,12 @@ class Runner(QObject):
         proc.setProcessChannelMode(QProcess.ProcessChannelMode.MergedChannels)
         if hasattr(proc, 'setUnixProcessParameters'):
             proc.setUnixProcessParameters(QProcess.UnixProcessFlag.CreateNewSession)
-        env = QProcessEnvironment.systemEnvironment()
+        if self.current.command[0] == sys.executable:
+            env = QProcessEnvironment.systemEnvironment()
+        else:
+            env = QProcessEnvironment()
+            for name, value in external_environment().items():
+                env.insert(name, value)
         for name, value in self.current.env.items():
             env.insert(name, value)
         proc.setProcessEnvironment(env)

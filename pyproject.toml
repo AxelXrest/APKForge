@@ -21,7 +21,7 @@ apkforge = "apkforge.app:main"
 include = ["apkforge*"]
 
 [tool.setuptools.package-data]
-apkforge = ["translations.json"]
+apkforge = ["translations.json", "assets/*.svg"]
 
 [tool.setuptools.dynamic]
 version = {attr = "apkforge.__version__"}

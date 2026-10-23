@@ -8,6 +8,7 @@ import tempfile
 import zipfile
 import xml.etree.ElementTree as ET
 from . import core
+from .runtime import external_environment
 
 
 def fix_project(directory):
@@ -109,7 +110,7 @@ def main():
                     '-storepass:env', 'APKFORGE_DEFAULT_PASS', '-keypass:env', 'APKFORGE_DEFAULT_PASS',
                     '-alias', 'androiddebugkey', '-keyalg', 'RSA', '-keysize', '2048',
                     '-validity', '10000', '-dname', 'CN=Android Debug,O=Android,C=US', '-noprompt']
-                subprocess.run(command, env={**os.environ, 'APKFORGE_DEFAULT_PASS': 'android'}, check=True)
+                subprocess.run(command, env={**external_environment(), 'APKFORGE_DEFAULT_PASS': 'android'}, check=True)
                 temporary.chmod(0o600)
                 # Do not replace an identity created by another app instance.
                 try:

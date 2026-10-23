@@ -1,0 +1,48 @@
+name: Native Linux packages
+on:
+  workflow_call:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 40
+    env:
+      QT_QPA_PLATFORM: offscreen
+      QT_QPA_PLATFORMTHEME: ''
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: packaging/requirements.txt
+      - name: Install native build and desktop libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y binutils libegl1 libgl1 libxkbcommon0 libxkbcommon-x11-0 libxcb-cursor0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0 libxcb-xkb1 desktop-file-utils
+      - run: python -m pip install -r packaging/requirements.txt
+      - run: python -m unittest discover -s tests -v
+      - name: Prepare pinned tooling and upstream source notices
+        run: python packaging/prepare.py
+      - name: Build and self-test native packages
+        run: python packaging/build.py --notices build/native/notices --appimagetool build/native/appimagetool-x86_64.AppImage --appimage-runtime build/native/runtime-x86_64
+      - name: Validate and smoke-test packaged payloads
+        env:
+          APKFORGE_OFFLINE: '1'
+        run: |
+          desktop-file-validate packaging/apkforge.desktop
+          dpkg-deb --info dist/*.deb
+          dpkg-deb --contents dist/*.deb > build/deb-contents.txt
+          dpkg-deb --extract dist/*.deb build/deb-check
+          build/deb-check/opt/apkforge/apkforge --self-test
+          tar -xzf dist/APKForge-*-linux-x86_64.tar.gz -C build
+          build/apkforge/apkforge --self-test
+          dist/APKForge-*-x86_64.AppImage --appimage-extract-and-run --self-test
+      - uses: actions/upload-artifact@v4
+        with:
+          name: native-linux-x86_64
+          path: dist/*
+          if-no-files-found: error
+          retention-days: 14

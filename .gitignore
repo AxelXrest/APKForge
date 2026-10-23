@@ -33,3 +33,10 @@ htmlcov/
 *.idsig
 *.apkforge.bak
 *.log
+
+# Native release packages
+*.deb
+*.AppImage
+wheelhouse/
+
+.venv-native/

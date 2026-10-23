@@ -381,7 +381,7 @@ def diagnose(s):
     return results
 
 
-def desktop_entry(python, directory):
+def desktop_entry(python, directory, *, frozen=False):
     # Desktop Exec has its own quoting rules and is not a shell command.
     def quote(value):
         value = str(value)
@@ -394,8 +394,9 @@ def desktop_entry(python, directory):
     if '\n' in folder or '\r' in folder:
         raise ValueError('Desktop entry paths cannot contain newlines.')
     folder = folder.replace('\\', '\\\\')
+    launch = quote(python) + ('' if frozen else ' -m apkforge.app')
     return ('[Desktop Entry]\nType=Application\nName=APKForge\n'
             'Comment=APK Tool GUI for Linux\n'
-            f'Exec={quote(python)} -m apkforge.app %f\nPath={folder}\n'
+            f'Exec={launch} %f\nPath={folder}\n'
             'Icon=application-x-executable\nTerminal=false\nCategories=Development;\n'
             'MimeType=application/vnd.android.package-archive;application/zip;\n')

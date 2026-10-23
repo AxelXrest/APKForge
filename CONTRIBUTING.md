@@ -47,3 +47,5 @@ tools, APKs, or signing credentials. Update documentation and
 
 When changing visible controls, regenerate the real UI captures using
 [screenshot instructions](docs/screenshots.md#updating-the-screenshots).
+
+For installable Linux releases, follow the [native packaging guide](docs/native-packaging.md).

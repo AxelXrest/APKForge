@@ -28,7 +28,8 @@ domain dedication. This dedication remains applicable to the adapted data.
 ## Runtime dependency
 
 [PySide6 / Qt for Python](https://doc.qt.io/qtforpython-6/) is provided by The Qt
-Company and contributors. It is installed separately by pip and is not part of
+Company and contributors. Source installs obtain it separately through pip;
+native releases bundle the shared libraries. It is not part of
 APKForge's MIT-licensed source. See Qt's
 [licensing information](https://www.qt.io/licensing/) and
 [third-party notices](https://doc.qt.io/qtforpython-6/licenses.html).
@@ -55,3 +56,20 @@ Downloads are obtained from GitHub releases, Google's Android repository, and
 Eclipse Adoptium. Published provider checksums are verified when available.
 Repackaging any of these dependencies requires preserving that distribution's
 applicable notices and terms separately from APKForge's license.
+
+## Native release bundles
+
+Native packages also include CPython and the PyInstaller bootloader. Qt/PySide6
+remain under their own licenses. Native builds collect license texts, attribution
+files and build versions under `licenses/` alongside the executable, and attach
+the upstream Qt/PySide6 source archives to the release. See
+[the bundled runtime notices](packaging/BUNDLED_NOTICES.md) and
+[native packaging guide](docs/native-packaging.md). The source wheel still carries
+only APKForge code/data and does not embed the native runtime.
+
+The package icon in `apkforge/assets/apkforge.svg` is an original APKForge asset under
+the project's MIT license. AppImage tooling is by the AppImage contributors;
+[appimagetool](https://github.com/AppImage/appimagetool) and
+[type2-runtime](https://github.com/AppImage/type2-runtime) retain their upstream
+licenses. PyInstaller's bootloader is distributed under its GPL license with
+[the bootloader exception](https://pyinstaller.org/en/stable/license.html).

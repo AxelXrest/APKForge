@@ -1,0 +1,3 @@
+# Native release baseline: Python 3.12 on Ubuntu 22.04 x86_64.
+PySide6==6.8.3
+pyinstaller==6.22.3

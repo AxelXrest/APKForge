@@ -42,7 +42,36 @@ and the light theme. The [user guide](docs/user-guide.md) lists the detailed fla
 and current limitations. Screenshots show the actual interface with empty inputs;
 they do not represent completed APK operations.
 
-## Requirements
+## Install a Linux package
+
+Download an x86_64 package from [GitHub Releases](https://github.com/AxelXrest/APKForge/releases).
+The release workflow builds these formats; publish the generated draft to make
+them available to users.
+
+**Debian / Ubuntu:**
+
+```bash
+sudo apt install ./apkforge_0.2.0_amd64.deb
+apkforge
+```
+
+**AppImage:**
+
+```bash
+chmod +x APKForge-0.2.0-x86_64.AppImage
+./APKForge-0.2.0-x86_64.AppImage
+```
+
+If FUSE is unavailable, run the AppImage with `--appimage-extract-and-run`, or use
+the portable `APKForge-0.2.0-linux-x86_64.tar.gz` archive and run its
+`apkforge/apkforge` executable. Replace the example version with your download.
+
+Native packages include Python and the Qt GUI runtime. They target Linux x86_64
+with glibc 2.35+ and compatible desktop libraries; Debian/Ubuntu packages install
+system dependencies through apt. Java and Android tools are installed separately.
+See [native packaging](docs/native-packaging.md) for builds, compatibility and tests.
+
+## Requirements for source installs
 
 - Linux, Python **3.10+**, and PySide6 **6.7–6.x** (installed by the launcher).
 - A graphical desktop and Qt runtime libraries. Debian/Ubuntu may require
@@ -58,6 +87,8 @@ PATH, in `JAVA_HOME`, Android SDK locations and local JARs. Only missing tools a
 downloaded at startup. Downloaded tools retain their own licenses.
 
 ## Quick start
+
+For running directly from source:
 
 From a downloaded or cloned source checkout:
 
@@ -85,7 +116,8 @@ adds a launcher without changing default file associations.
 
 ## Offline use
 
-After installing Python dependencies and the tools needed for your workflows,
+After installing a native package (or Python dependencies for a source install)
+and the tools needed for your workflows,
 decoding, rebuilding, signing, alignment, inspection and USB ADB work locally.
 Store links, tool downloads and updates require internet access.
 
@@ -93,6 +125,10 @@ To skip automatic Python installation and tool downloads explicitly:
 
 ```bash
 APKFORGE_OFFLINE=1 ./run.sh
+# Debian package:
+APKFORGE_OFFLINE=1 apkforge
+# AppImage:
+APKFORGE_OFFLINE=1 ./APKForge-0.2.0-x86_64.AppImage
 ```
 
 This mode still discovers local tools and reports missing ones. Workflows requiring
@@ -101,7 +137,12 @@ links you open. Keep `.venv` and your configured tool installation on the machin
 for subsequent offline launches; neither belongs in Git. A freshly cleaned
 checkout needs dependencies installed again.
 
-For installation on a disconnected machine, prepare a wheelhouse on a connected
+For a native offline installation, transfer the `.deb`, AppImage or portable
+archive and the required external tools. Prepare any missing system libraries
+ahead of time; `apt install` may otherwise need network access.
+
+For a Python source/package installation on a disconnected machine, prepare a
+wheelhouse on a connected
 Linux machine with the same architecture and Python version. Build the APKForge
 wheel (see CONTRIBUTING), then download its dependencies:
 
@@ -126,20 +167,25 @@ installed ahead of time.
 
 ## Releases
 
-Pushing a tag matching the package version, such as `v0.2.0`, runs CI and creates a
-**draft GitHub release** with a wheel, source distribution and `SHA256SUMS`.
-Maintainers review the draft and publish it from GitHub. See the
-[release checklist](docs/architecture.md#release-checks).
+Pushing a tag matching the package version, such as `v0.2.0`, runs CI and the
+native build, then creates a **draft GitHub release** containing:
 
-These are Python packages, not standalone executables: they require Python,
-PySide6/Qt and external Android tools. The release workflow does not bundle those
-tools, build an AppImage/DEB, or publish to PyPI. Verify downloaded assets with
+- `.deb`, AppImage and a portable Linux archive (x86_64).
+- Python wheel and source distribution.
+- Upstream Qt/PySide6 source archives and SHA-256 checksums.
+
+Review the draft and publish it from GitHub. See the
+[release checklist](docs/architecture.md#release-checks) and
+[native build guide](docs/native-packaging.md). You can also run **Native Linux
+packages** manually in Actions to download test builds before tagging a release.
+There is no automatic PyPI publication. Verify downloaded assets with
 `sha256sum -c SHA256SUMS` from the directory containing all release assets.
 
 ## Documentation
 
 - [Screenshots of every tab and settings panel](docs/screenshots.md)
 - [User guide and feature coverage](docs/user-guide.md)
+- [Native packages and build instructions](docs/native-packaging.md)
 - [Project layout, architecture and release checks](docs/architecture.md)
 - [Contributing and development setup](CONTRIBUTING.md)
 - [Security reports](SECURITY.md)
