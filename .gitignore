@@ -1,0 +1,35 @@
+# Python environments and generated files
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.coverage
+htmlcov/
+# Local editors and machine state
+.idea/
+.vscode/
+.DS_Store
+.env
+.env.*
+# Local Android inputs, outputs and signing identities
+*.apk
+*.apks
+*.apkm
+*.xapk
+*.dex
+*.odex
+*.oat
+*.jks
+*.keystore
+*.p12
+*.pfx
+*.pk8
+*.pem
+*.key
+*.idsig
+*.apkforge.bak
+*.log

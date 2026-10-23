@@ -1,0 +1,42 @@
+name: Release
+on:
+  push:
+    tags: ['v[0-9]*']
+permissions:
+  contents: read
+jobs:
+  checks:
+    uses: ./.github/workflows/ci.yml
+  release:
+    needs: checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+      - name: Verify tag matches package version
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          python - <<'PYTHON'
+          import os
+          from apkforge import __version__
+          expected = 'v' + __version__
+          if os.environ['RELEASE_TAG'] != expected:
+              raise SystemExit(f'Release tag must be {expected}')
+          PYTHON
+      - run: python -m pip install build twine
+      - run: python -m build && python -m twine check dist/*
+      - name: Generate checksums
+        run: |
+          cd dist
+          sha256sum *.whl *.tar.gz > SHA256SUMS
+      - name: Create draft GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: gh release create "$RELEASE_TAG" dist/* --verify-tag --draft --generate-notes --title "APKForge $RELEASE_TAG"
