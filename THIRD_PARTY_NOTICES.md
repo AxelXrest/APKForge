@@ -3,7 +3,7 @@
 ## APKForge
 
 Original APKForge Python code is licensed under [MIT](LICENSE), copyright
-2026 APKForge contributors. This license does not relicense external dependencies
+2026 AxelXrest and APKForge contributors. This license does not relicense external dependencies
 or the upstream-derived translation data.
 
 ## APKToolGUI workflow and translations

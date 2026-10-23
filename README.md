@@ -1,22 +1,46 @@
 # APKForge Linux
 
-A native Linux desktop application for decoding, rebuilding, inspecting, aligning
-and signing Android APKs. Built with Python and Qt, inspired by
-[AndnixSH/APKToolGUI](https://github.com/AndnixSH/APKToolGUI). Runs locally without
-Wine or a server. This is an independent project, not an official upstream release.
+A Linux desktop app for working with Android APKs, maintained by **AxelXrest**.
+Decode an APK, edit the project, rebuild it, then align and sign the result from
+one window. Python and Qt handle the interface; established Android tools do the
+APK work. No Wine or server required.
 
-## Features
+The workflow is inspired by [AndnixSH/APKToolGUI](https://github.com/AndnixSH/APKToolGUI).
+This is an independent Linux project; upstream authors and translators are credited
+in [third-party notices](THIRD_PARTY_NOTICES.md).
 
-- Nine workflow tabs: Main, APK Info, Decode, Build, Sign, Zip align, Framework,
-  Baksmali and ADB.
-- Apktool/APKEditor projects, split-package merging, APK metadata and bitmap icons.
-- Chained build → align → sign → install with validation, live logs and cancellation.
-- Custom tool paths, automatic discovery, installation of missing tools and explicit updates.
-- Drag and drop, desktop Open With integration, themes and nine interface languages
-  with English fallback for incomplete translations.
+![APKForge Main tab with decode, build, align, sign and split-package merge actions](docs/screenshots/main.png)
 
-See the [user guide](docs/user-guide.md) for the full feature matrix, signing
-behavior, settings locations and limitations.
+[Get started](#quick-start) · [All screenshots](docs/screenshots.md) ·
+[User guide](docs/user-guide.md) · [Offline setup](#offline-use) · [Releases](#releases)
+
+## What it does
+
+| Tab | Available workflows |
+| --- | --- |
+| [Main](docs/screenshots.md#main) | Decode, build, align, sign and merge, with shortcuts to project files and output folders. |
+| [APK Info](docs/screenshots.md#apk-info) | Package/version/SDK details, permissions, architectures, bitmap icons, AAPT dumps and certificate verification. |
+| [Decode](docs/screenshots.md#decode) | Apktool or APKEditor; APK/XAPK/APKS/APKM/ZIP input; split merge, source/resource options, frameworks and optional project fixes. |
+| [Build](docs/screenshots.md#build) | Detect the project format, configure rebuild options, then optionally align and sign. |
+| [Sign](docs/screenshots.md#sign) | Development key, your own keystore, or key/certificate pair; v1–v4 schemes and signature verification. |
+| [Zip align](docs/screenshots.md#zip-align) | Align or check APKs, select native-library page alignment, and optionally sign the output. |
+| [Framework](docs/screenshots.md#framework) | Install, tag and clean frameworks in an app-managed cache or a custom directory. |
+| [Baksmali](docs/screenshots.md#baksmali) | Disassemble DEX/ODEX/OAT/APK files and assemble smali back into DEX. |
+| [ADB](docs/screenshots.md#adb) | Select an authorized device and install APKs, with replacement, installer and ABI options. |
+
+Drag and drop files, preview commands before running them, follow live output, and
+stop an active workflow. Paths and options are remembered; passwords are not saved.
+Dark, light and system themes are available. English and eight upstream
+translations are included, with English fallback where translations are incomplete.
+
+| Decode options | Signing options |
+| --- | --- |
+| ![Decode tab showing engine, resource, source, framework and thread options](docs/screenshots/decode.png) | ![Sign tab showing signing identity and signature scheme controls](docs/screenshots/sign.png) |
+
+The [screenshot gallery](docs/screenshots.md) covers every tab, both settings panels
+and the light theme. The [user guide](docs/user-guide.md) lists the detailed flags
+and current limitations. Screenshots show the actual interface with empty inputs;
+they do not represent completed APK operations.
 
 ## Requirements
 
@@ -114,6 +138,7 @@ tools, build an AppImage/DEB, or publish to PyPI. Verify downloaded assets with
 
 ## Documentation
 
+- [Screenshots of every tab and settings panel](docs/screenshots.md)
 - [User guide and feature coverage](docs/user-guide.md)
 - [Project layout, architecture and release checks](docs/architecture.md)
 - [Contributing and development setup](CONTRIBUTING.md)
@@ -123,7 +148,7 @@ tools, build an AppImage/DEB, or publish to PyPI. Verify downloaded assets with
 ## Validation
 
 ```bash
-QT_QPA_PLATFORM=offscreen .venv/bin/python -m unittest discover -s tests -v
+QT_QPA_PLATFORM=offscreen QT_QPA_PLATFORMTHEME= .venv/bin/python -m unittest discover -s tests -v
 .venv/bin/python -m compileall -q apkforge
 bash -n run.sh
 ```
@@ -142,7 +167,7 @@ containing its additional JARs and test certificate:
 
 ```bash
 APKFORGE_REFERENCE_TOOLS=/path/to/APKToolGUI/Tools \
-  QT_QPA_PLATFORM=offscreen .venv/bin/python tests/integration/smoke.py
+  QT_QPA_PLATFORM=offscreen QT_QPA_PLATFORMTHEME= .venv/bin/python tests/integration/smoke.py
 ```
 
 ## Troubleshooting
@@ -160,7 +185,7 @@ APKFORGE_REFERENCE_TOOLS=/path/to/APKToolGUI/Tools \
 
 ## License and credits
 
-APKForge's original code is [MIT licensed](LICENSE). The UI workflow and adapted
+APKForge is maintained by **AxelXrest**. Original code is [MIT licensed](LICENSE). The UI workflow and adapted
 translation resources credit AndnixSH/APKToolGUI and its contributors, with original
 project lineage to INF1NUM/APKToolGUI. The translation resources retain their
 upstream Unlicense dedication. External tools and PySide6/Qt use separate licenses;

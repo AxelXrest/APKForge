@@ -11,7 +11,7 @@ Use Python 3.10 or newer on Linux:
 python3 -m venv .venv
 . .venv/bin/activate
 python -m pip install -e .
-QT_QPA_PLATFORM=offscreen python -m unittest discover -s tests -v
+QT_QPA_PLATFORM=offscreen QT_QPA_PLATFORMTHEME= python -m unittest discover -s tests -v
 python -m compileall -q apkforge
 ```
 
@@ -44,3 +44,6 @@ python -m twine check dist/*
 Do not commit virtual environments, IDE state, generated distributions, downloaded
 tools, APKs, or signing credentials. Update documentation and
 [third-party notices](THIRD_PARTY_NOTICES.md) when behavior or provenance changes.
+
+When changing visible controls, regenerate the real UI captures using
+[screenshot instructions](docs/screenshots.md#updating-the-screenshots).

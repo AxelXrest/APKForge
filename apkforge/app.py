@@ -1261,7 +1261,7 @@ class Window(QMainWindow):
         dialog.exec()
 
     def about(self):
-        QMessageBox.about(self, 'About APKForge', f'APKForge {__version__}\nNative Linux APK Tool GUI\n\nInspired by AndnixSH/APKToolGUI.\nUses local Apktool, APKEditor, Android Build Tools and Smali utilities.\n\nPython + Qt · No Wine required.\nSee README for feature coverage and upstream credits.')
+        QMessageBox.about(self, 'About APKForge', f'APKForge {__version__}\nNative Linux APK Tool GUI\nMaintained by AxelXrest\n\nInspired by AndnixSH/APKToolGUI.\nUses local Apktool, APKEditor, Android Build Tools and Smali utilities.\n\nPython + Qt · No Wine required.\nSee README for feature coverage and upstream credits.')
 
     def dragEnterEvent(self, event):
         urls = event.mimeData().urls()

@@ -19,6 +19,7 @@ jobs:
         python: ['3.10', '3.14']
     env:
       QT_QPA_PLATFORM: offscreen
+      QT_QPA_PLATFORMTHEME: ''
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

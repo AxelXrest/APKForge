@@ -5,6 +5,8 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "apkforge-linux"
 dynamic = ["version"]
+authors = [{name = "AxelXrest"}]
+maintainers = [{name = "AxelXrest"}]
 description = "Cross-distribution native Linux GUI for Android APK workflows"
 readme = "README.md"
 requires-python = ">=3.10"
